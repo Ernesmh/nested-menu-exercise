@@ -1,0 +1,20 @@
+<button *ngIf="isMainButton" class="menu__main-button" mat-raised-button [matMenuTriggerFor]="menu">
+    {{ buttonText }}
+</button>
+<button *ngIf="!isMainButton" mat-menu-item [matMenuTriggerFor]="menu" (menuOpened)="checkForChildren(buttonText)">
+    {{ buttonText }}
+</button>
+<mat-menu #menu="matMenu" xPosition="after" [overlapTrigger]="false">
+    <ng-container *ngFor="let dataElement of data; let i = index">
+        <button mat-menu-item>
+          <app-nested-menu
+            [isMainButton]="false"
+            [buttonText]="dataElement.name"
+            *ngIf="hasSubLevels(dataElement); else menuItem"
+          ></app-nested-menu>
+        </button>
+        <ng-template #menuItem>
+          <button mat-menu-item>{{ dataElement.name }}</button>
+        </ng-template>
+    </ng-container>
+</mat-menu>

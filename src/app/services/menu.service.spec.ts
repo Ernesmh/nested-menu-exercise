@@ -1,0 +1,83 @@
+import { TestBed } from '@angular/core/testing';
+import { NestedMenuElement } from '../models/nested-menu.interface';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import { MenuService } from './menu.service';
+
+const NESTED_MENU: NestedMenuElement[] = [
+  {
+      name: "Bebidas",
+      id: 1,
+      parentId: null
+  }, {
+      name: "Comidas",
+      id: 2,
+      parentId: null
+  }, {
+      name: "Limpieza",
+      id: 3,
+      parentId: null
+  }, {
+      name: "Gaseosas",
+      id: 100,
+      parentId: 1
+  }, {
+      name: "Con Alcohol",
+      id: 1010,
+      parentId: 100
+  }, {
+      name: "Sin Alcohol",
+      id: 1009,
+      parentId: 100
+  }, {
+      name: "Con Azúcar",
+      id: 101,
+      parentId: 1009
+  }, {
+      name: "Sin Azucar",
+      id: 103,
+      parentId: 1009
+  }, {
+      name: "Jugos",
+      id: 189,
+      parentId: 103
+  }, {
+      name: "Energizantes",
+      id: 1222,
+      parentId: 103
+  }, {
+      name: "Fruta",
+      id: 1223,
+      parentId: 1222
+  }, {
+      name: "Sin grasa",
+      id: 12231231,
+      parentId: 1223
+  }
+]
+
+describe('MenuService', () => {
+  let service: MenuService;
+  let httpMock: HttpTestingController;
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [MenuService]
+    });
+    service = TestBed.inject(MenuService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(()=>{
+    httpMock.verify();
+  })
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  it('should find an specific element by name and return the children array', () => {
+    service.menuElements = NESTED_MENU;
+    const withoutAlcoholChildren = service.checkChildren('Sin Alcohol');
+    expect(withoutAlcoholChildren.length).toBe(2);
+  });
+});
